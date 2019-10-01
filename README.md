@@ -10,7 +10,9 @@
     - pid_t waitpid(pid_t pid, int *startup, int options);
         pid_t wait(int *startus);
         Calling wait(&status) is equivalent to calling waitpid(-1, &status, 0).
+
     ``` Problem internal command pwd, cd```
+    
     - Implement internal command: pwd, cd
 
 2. Providing a history feature
