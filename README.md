@@ -1,5 +1,5 @@
-#Shell C Interface 
-    Excute command in a sperate process 
+# Shell C Interface 
+## Excute command in a sperate process 
 
 1. Creating the child process and executing the command in the child 
     - pid_t fork(void);
@@ -12,7 +12,7 @@
         Calling wait(&status) is equivalent to calling waitpid(-1, &status, 0).
 
     ``` Problem internal command pwd, cd```
-    
+
     - Implement internal command: pwd, cd
 
 2. Providing a history feature
