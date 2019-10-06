@@ -1,29 +1,36 @@
 /*
-   Shell C Interface 
-    Excute command in a sperate process 
+# Shell C Interface 
+## Excute command in a sperate process 
 
 1. Creating the child process and executing the command in the child 
-    1.1 pid_t fork(void);
-        1.1.1 Call once, return twice
-        1.1.2 Concurrent excution
-        1.1.3 Duplicate but separate address spaces
-        1.1.4 Shared files
-    1.2 pid_t waitpid(pid_t pid, int *startup, int options);
+    - pid_t fork(void);
+        - Call once, return twice
+        - Concurrent excution
+        - Duplicate but separate address spaces
+        - Shared files
+    - pid_t waitpid(pid_t pid, int *startup, int options);
         pid_t wait(int *startus);
         Calling wait(&status) is equivalent to calling waitpid(-1, &status, 0).
-    *** Problem internal command pwd, cd
-    1.3 Implement internal command: pwd, cd
+
+    ``` Problem internal command pwd, cd```
+
+    - Implement internal command: pwd, cd
 
 2. Providing a history feature
-    2.1 Save command in log.txt
-    2.2 !! excute the last command in log.txt
+    - Save command in log.txt
+    - !! excute the last command in log.txt
 
 3. Adding support of input and output redirection
-    2.1 int creat(char *filename, mode_t mode); for output
-    2.2 int open (const char* Path, int flags [, int mode ]); for input
-    2.2 int dup2(int oldfd, int newfd);
+    - int creat(char *filename, mode_t mode); for output
+    - int open (const char* Path, int flags [, int mode ]); for input
+    - int dup2(int oldfd, int newfd);
     
 4. Allowing the parent and child processes to communicate via a pipe
+    - int pipe(int fds[2]); 
+        - fds[0] for read
+        - fds[1] for write
+    - Backup file description STDIN and STDOUT
+    - Open pipe and exec
 */
 
 #include <stdio.h>
@@ -56,10 +63,13 @@ char **parse_input(char *);
 int exec_command(char *);
 int pipe_execute();
 int execute_cmd(char *);
+void set_env();
+void unset_env();
 
 // Global variables
 char *input;
 char **args;
+extern char **environ;
 char log_his[100][1024];
 char *log_file;
 char *file_redirection_input;
@@ -110,9 +120,12 @@ void prompt()
     // Check Buffer Overflow ???
     char shell[254];
     char cwd[254];
+    char *usrname;
+    usrname = getenv("USER");
+
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
-        strcpy(shell, "[Simple Shell]");
+        sprintf(shell, "[%s]", usrname);
         strcat(shell, cwd);
         strcat(shell, "$ ");
 
@@ -142,6 +155,41 @@ void pwd_exec()
     }
     else
         perror("Shell err: getcwd error");
+}
+
+void set_env()
+{
+    int n = 1;
+    char *buf[10];
+    if (args[1] == NULL && strcmp(args[0], "export") == 0)
+    {
+        char **env;
+        for (env = environ; *env != 0; env++)
+        {
+            char *value = *env;
+            printf("declare -x %s\n", value);
+        }
+        return;
+    }
+    buf[0] = strtok(args[1], "=");
+    while ((buf[n] = strtok(NULL, "=")) != NULL)
+        n++;
+    buf[n] = NULL;
+    setenv(buf[0], buf[1], 0);
+}
+
+void unset_env() 
+{
+    if (args[1] == NULL) 
+    {
+        perror("Shell err: you must enter name of environment variables.\n");
+        return;
+    }
+    else
+    {
+        unsetenv(args[1]);
+    }
+    
 }
 
 void parse_redirection_input(char *input)
@@ -394,7 +442,7 @@ int exec_command(char *input_direct)
             close(fd_redirection_output);
             redirection_output = 0;
         }
-        
+
         // Check and execute cd, pwd
         if (strcmp(args[0], "cd") == 0)
         {
@@ -404,6 +452,18 @@ int exec_command(char *input_direct)
         else if (strcmp(args[0], "pwd") == 0)
         {
             pwd_exec();
+            return 1;
+        }
+
+        else if (strcmp(args[0], "export") == 0 || strcmp(args[0], "set") == 0)
+        {
+            set_env();
+            return 1;
+        }
+
+        else if (strcmp(args[0], "unset") == 0)
+        {
+            unset_env();
             return 1;
         }
 
@@ -447,7 +507,7 @@ int pipe_execute()
     cmds[0] = cmd;
     cmd = strtok(NULL, "|");
     cmds[1] = cmd;
-    
+
     // 0 is read end, 1 is write end
     int pipefd[2];
     pid_t p1;
@@ -486,7 +546,8 @@ int pipe_execute()
 
 int execute_cmd(char *temp_input)
 {
-    if(strchr(temp_input, '|') != NULL) {
+    if (strchr(temp_input, '|') != NULL)
+    {
         return pipe_execute();
     }
     else
@@ -510,20 +571,28 @@ int main(int argc, char **argv)
         prompt();
         input = read_input();
 
-        if (strcmp(input, "!!") == 0)
+        if (strcmp(input, "exit") == 0)
         {
-            if (log_count == 0)
-            {
-                perror("Shell err: no history.\n");
-                continue;
-            }
-            strcpy(input, log_his[log_count - 1]);
-            status = execute_cmd(input);
+            status = 0;
+            break;
         }
         else
         {
-            fdwrite(input);
-            status = execute_cmd(input);
+            if (strcmp(input, "!!") == 0)
+            {
+                if (log_count == 0)
+                {
+                    perror("Shell err: no history.\n");
+                    continue;
+                }
+                strcpy(input, log_his[log_count - 1]);
+                status = execute_cmd(input);
+            }
+            else
+            {
+                fdwrite(input);
+                status = execute_cmd(input);
+            }
         }
 
     } while (status);
