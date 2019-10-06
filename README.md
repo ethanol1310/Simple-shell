@@ -6,22 +6,22 @@ gcc -o shellmain shellmain.c
 ```
 
 ## Command
-[x] exit
-[x] cd
-[x] pwd
-[x] env
-[x] export 
-[x] set
-[x] unset
-[x] history
-[] help
+- [x] exit
+- [x] cd
+- [x] pwd
+- [x] env
+- [x] export 
+- [x] set
+- [x] unset
+- [x] history
+- [ ] help
 
 ## Usage
 To start simple shell, run the command below: 
 ```
 ./shellmain
 ```
-1. [x]For internal command pwd, cd, set, unset, export
+1. For internal command pwd, cd, set, unset, export
 ```
 $ pwd
 $ cd 
@@ -31,7 +31,7 @@ $ set MYVAR="abcd"
 $ unset MYVAR
 ```
 
-2. [x]For regular command
+2. For regular command
 ```
 $ ls
 $ ls -l
@@ -39,18 +39,18 @@ $ ps
 $ cat README.md
 ```
 
-3. [x]Execute history
+3. Execute history
 ```
 $ !!
 ```
 
-4. [x]Single redirection
+4. Single redirection
 ```
 $ ls -l > output
 $ grep README < output
 ```
 
-5. [x]Single pipe
+5. Single pipe
 ```
 $ cat output | grep README
 ```
