@@ -1,5 +1,9 @@
 # Shell C Interface 
 
+## Build Requirements
+- Unix 
+- Gcc 
+
 ## Installation
 ```
 gcc -o shellmain shellmain.c
