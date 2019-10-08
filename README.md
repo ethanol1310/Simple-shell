@@ -90,7 +90,7 @@ $ cat output | grep README
         - fds[0] for read
         - fds[1] for write
     - Backup file description STDIN and STDOUT
-    - Open pipe and exec
+    - Open pipe and execute
 
 ## Credit
 - 1712689 Huỳnh Ngọc Quân
