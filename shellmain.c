@@ -582,7 +582,8 @@ int main(int argc, char **argv)
             {
                 if (log_count == 0)
                 {
-                    perror("Shell err: no history.\n");
+                    printf("Shell err: no history.\n");
+                    status = 1;
                     continue;
                 }
                 strcpy(input, log_his[log_count - 1]);
@@ -596,6 +597,6 @@ int main(int argc, char **argv)
         }
 
     } while (status);
-
+    remove("log.txt");
     return 0;
 }
