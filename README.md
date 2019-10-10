@@ -15,7 +15,6 @@ gcc -o shellmain shellmain.c
 - [x] unset
 - [x] history
 - [x] background process (&)
-- [ ] help
 
 ## Usage
 To start simple shell, run the command below: 
