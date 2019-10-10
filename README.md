@@ -33,7 +33,7 @@ $ sleep 30 &
 $ cat log.txt &
 ```
 
-2. For regular command
+2. For external command
 ```
 $ ls
 $ ls -l
