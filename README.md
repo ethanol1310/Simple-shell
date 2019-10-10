@@ -1,8 +1,12 @@
 # Shell C Interface 
 
+## Requirement
+- Unix
+- Gcc
+
 ## Installation
 ```
-gcc -o shellmain shellmain.c
+gcc -o shellfinal shellfinal.c
 ```
 
 ## Command
@@ -19,7 +23,7 @@ gcc -o shellmain shellmain.c
 ## Usage
 To start simple shell, run the command below: 
 ```
-./shellmain
+./shellfinal
 ```
 1. For internal command pwd, cd, set, unset, export
 ```
@@ -73,10 +77,10 @@ $ cat file.txt | sort
         - Concurrent excution
         - Duplicate but separate address spaces
         - Shared files
-    - pid_t waitpid(pid_t pid, int *startup, int options);
+    - pid_t waitpid(pid_t pid, int *startup, int options); -> background process
     - pid_t wait(int *startus);
         Calling wait(&status) is equivalent to calling waitpid(-1, &status, 0).
-
+        
     ``` Problem internal command pwd, cd```
 
     - Implement internal command: pwd, cd, exit, export, set, unset
@@ -86,8 +90,8 @@ $ cat file.txt | sort
     - !! excute the last command in log.txt
 
 3. Adding support of input and output redirection
-    - int creat(char *filename, mode_t mode); for output
-    - int open (const char* Path, int flags [, int mode ]); for input
+    - int creat(char *filename, mode_t mode); 
+    - int open (const char* Path, int flags [, int mode ]); 
     - int dup2(int oldfd, int newfd);
     
 4. Allowing the parent and child processes to communicate via a pipe
@@ -101,5 +105,6 @@ $ cat file.txt | sort
 - 1712689 Huỳnh Ngọc Quân
 - 1712759 Phạm Minh Thắng
 - 1712698 Võ Văn Quân
+
 Ho Chi Minh University of Science
 
